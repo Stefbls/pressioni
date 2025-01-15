@@ -69,7 +69,7 @@ if uploaded_file:
     st.dataframe(stratigraphy)
 
     # Input falda
-    water_table = st.number_input("Quota della falda [m NGF]:", value=30.0, step=0.1)
+    water_table = st.number_input("Quota della falda altimetrica [m NGF]:", value=30.0, step=0.1)
 
     # Generazione grafico
     st.write("Grafico delle pressioni:")
