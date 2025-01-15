@@ -56,7 +56,7 @@ def plot_graphs(stratigraphy, water_table):
     st.pyplot(fig)
 
 # Titolo dell'app
-st.title("Calcolo delle Pressioni Litostatiche")
+st.title("Calcolo delle Pressioni Litostaticheeee")
 
 # Caricamento file Excel
 uploaded_file = st.file_uploader("Carica un file Excel con la stratigrafia", type=["xlsx"])
