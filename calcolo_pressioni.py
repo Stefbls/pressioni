@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 # Titolo dell'app
 st.title("Calcolo delle Pressioni Litostatiche")
 
+# Caricamento file Excel
+uploaded_file = st.file_uploader("Carica un file Excel con la stratigrafia", type=["xlsx"])
 
 # Input dei dati della stratigrafia con i titoli degli strati
 stratigraphy = [
@@ -14,7 +16,9 @@ stratigraphy = [
 ]
 
 # Quota della falda in metri NGF
-water_table = 26  # Quota della falda
+# Input falda
+water_table = st.number_input("Quota della falda [m NGF]:", value=26.0, step=0.1)
+
 
 # Funzioni di calcolo (rimangono invariate)
 def calculate_lithostatic_pressure(z_ngf, stratigraphy):
