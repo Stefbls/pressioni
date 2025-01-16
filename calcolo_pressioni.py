@@ -8,19 +8,23 @@ st.title("Calcolo delle Pressioni Litostatiche")
 # Caricamento file Excel
 uploaded_file = st.file_uploader("Carica un file Excel con la stratigrafia", type=["xlsx"])
 
-# Input dei dati della stratigrafia con i titoli degli strati
-stratigraphy = [
-    {"top_level": 35, "bottom_level": 28, "unit_weight": 18, "k": 0.5, "title": "Remblais"},
-    {"top_level": 28, "bottom_level": 20, "unit_weight": 20, "k": 0.45, "title": "Marnes"},
-    {"top_level": 20, "bottom_level": 12, "unit_weight": 21, "k": 0.3, "title": "Alluvions"},
-]
+
+if uploaded_file:
+    stratigraphy = load_excel(uploaded_file)
+    st.write("Dati caricati:")
+    st.dataframe(stratigraphy)
+
+    # Implementa il tuo script per calcoli e grafici qui
+    st.write("Ecco il grafico generato:")
+    # Inserisci qui il codice del tuo grafico
+
 
 # Quota della falda in metri NGF
 # Input falda
 water_table = st.number_input("Quota della falda [m NGF]:", value=26.0, step=0.1)
 
 
-# Funzioni di calcolo (rimangono invariate)
+# Funzioni di calcolo
 def calculate_lithostatic_pressure(z_ngf, stratigraphy):
     pressure = 0
     in_stratum = False
@@ -77,6 +81,11 @@ def calculate_horizontal_pressure(z_ngf, stratigraphy, water_table):
                 return None
 
     return None
+
+
+
+
+
 
 # Preparare le quote per il grafico
 quotas_ngf = [stratigraphy[0]["top_level"], water_table]  # Quota di sommità e falda
