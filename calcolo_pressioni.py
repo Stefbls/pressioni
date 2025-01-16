@@ -2,6 +2,14 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
+# Titolo dell'app
+st.title("Calcolo delle Pressioni Litostatiche")
+
+# Caricamento file Excel
+uploaded_file = st.file_uploader("Carica un file Excel con la stratigrafia", type=["xlsx"])
+
+
+
 # Funzioni dal tuo script
 def calculate_vertical_pressure(z, stratigraphy):
     pressure = 0
@@ -55,11 +63,7 @@ def plot_graphs(stratigraphy, water_table):
     ax.legend()
     st.pyplot(fig)
 
-# Titolo dell'app
-st.title("Calcolo delle Pressioni Litostaticheeee")
 
-# Caricamento file Excel
-uploaded_file = st.file_uploader("Carica un file Excel con la stratigrafia", type=["xlsx"])
 
 if uploaded_file:
     # Lettura dati stratigrafia
