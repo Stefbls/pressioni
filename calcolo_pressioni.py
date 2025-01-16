@@ -2,6 +2,10 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
+# Titolo dell'app
+st.title("Calcolo delle Pressioni Litostatiche")
+
+
 # Input dei dati della stratigrafia con i titoli degli strati
 stratigraphy = [
     {"top_level": 35, "bottom_level": 28, "unit_weight": 18, "k": 0.5, "title": "Remblais"},
