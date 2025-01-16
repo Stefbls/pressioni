@@ -8,22 +8,28 @@ st.title("Calcolo delle Pressioni Litostatiche")
 # Caricamento file Excel
 uploaded_file = st.file_uploader("Carica un file Excel con la stratigrafia", type=["xlsx"])
 
-
-
 # Funzioni dal tuo script
 def calculate_vertical_pressure(z, stratigraphy):
     pressure = 0
-    for i, layer in stratigraphy.iterrows():
-        top = layer['Top Level']
-        bottom = layer['Bottom Level']
-        gamma = layer['Unit Weight']
-        if z > top:
-            continue
-        elif z >= bottom:
-            pressure += gamma * (z - top)
+    in_stratum = False
+
+    for i, layer in enumerate(stratigraphy):
+        top = layer["top_level"]
+        bottom = layer["bottom_level"]
+        gamma = layer["unit_weight"]
+
+        if top >= z_ngf >= bottom:
+            in_stratum = True
+            for j in range(i):
+                thickness = stratigraphy[j]["top_level"] - stratigraphy[j]["bottom_level"]
+                pressure += stratigraphy[j]["unit_weight"] * thickness
+            thickness_in_layer = top - z_ngf
+            pressure += gamma * thickness_in_layer
             break
-        else:
-            pressure += gamma * (bottom - top)
+
+    if not in_stratum:
+        return None
+
     return pressure
 
 def calculate_pore_pressure(z, water_table):
