@@ -2,29 +2,6 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Titolo dell'app
-st.title("Calcolo delle Pressioni Litostatiche")
-
-# Caricamento file Excel
-uploaded_file = st.file_uploader("Carica un file Excel con la stratigrafia", type=["xlsx"])
-
-
-if uploaded_file:
-    stratigraphy = load_excel(uploaded_file)
-    st.write("Dati caricati:")
-    st.dataframe(stratigraphy)
-
-    # Implementa il tuo script per calcoli e grafici qui
-    st.write("Ecco il grafico generato:")
-    # Inserisci qui il codice del tuo grafico
-
-
-# Quota della falda in metri NGF
-# Input falda
-water_table = st.number_input("Quota della falda [m NGF]:", value=26.0, step=0.1)
-
-
-# Funzioni di calcolo
 def calculate_lithostatic_pressure(z_ngf, stratigraphy):
     pressure = 0
     in_stratum = False
@@ -49,15 +26,12 @@ def calculate_lithostatic_pressure(z_ngf, stratigraphy):
     return pressure
 
 def calculate_water_pressure(z_ngf, water_table):
-    if z_ngf >= water_table:
-        return 0
-    else:
-        return 10 * (water_table - z_ngf)
+    return max(0, (water_table - z_ngf) * 10)
 
 def calculate_effective_pressure(z_ngf, stratigraphy, water_table):
     lithostatic_pressure = calculate_lithostatic_pressure(z_ngf, stratigraphy)
     water_pressure = calculate_water_pressure(z_ngf, water_table)
-
+    
     if lithostatic_pressure is not None:
         return lithostatic_pressure - water_pressure
     else:
@@ -82,83 +56,75 @@ def calculate_horizontal_pressure(z_ngf, stratigraphy, water_table):
 
     return None
 
+# Title of the application
+st.title("Calcolo delle Pressioni nel Terreno")
 
+# File upload for stratigraphy
+data_file = st.file_uploader("Carica il file Excel della stratigrafia", type=["xlsx"])
+if data_file:
+    stratigraphy_df = pd.read_excel(data_file)
 
+    # Ensure correct column names
+    required_columns = ["top_level", "bottom_level", "unit_weight", "title", "k"]
+    if not all(col in stratigraphy_df.columns for col in required_columns):
+        st.error(f"Il file deve contenere le seguenti colonne: {', '.join(required_columns)}")
+    else:
+        # Convert dataframe to list of dictionaries
+        stratigraphy = stratigraphy_df.to_dict(orient="records")
 
+        # User input for water table level
+        water_table = st.number_input("Inserisci la quota della falda (m NGF):", value=25.0)
 
+        # Prepare quotas for the plot
+        quotas_ngf = [layer["top_level"] for layer in stratigraphy] + [layer["bottom_level"] for layer in stratigraphy]
+        quotas_ngf.append(water_table)
+        quotas_ngf = sorted(set(quotas_ngf), reverse=True)
 
-# Preparare le quote per il grafico
-quotas_ngf = [stratigraphy[0]["top_level"], water_table]  # Quota di sommità e falda
-for i, layer in enumerate(stratigraphy[:-1]):  # Per gli strati intermedi
-    quotas_ngf.append(layer["bottom_level"])  # Quota di fondo
-    quotas_ngf.append(layer["bottom_level"] - 0.01)  # 1 cm sotto il cambio di strato
-quotas_ngf.append(stratigraphy[-1]["bottom_level"])  # Quota di fondo dell'ultimo strato
+        # Calculate pressures
+        lithostatic_pressures = []
+        water_pressures = []
+        effective_pressures = []
+        horizontal_pressures = []
 
-quotas_ngf = sorted(set(quotas_ngf), reverse=True)  # Rimuovi duplicati e ordina decrescente
+        for z_ngf in quotas_ngf:
+            lithostatic_pressure = calculate_lithostatic_pressure(z_ngf, stratigraphy)
+            water_pressure = calculate_water_pressure(z_ngf, water_table)
+            effective_pressure = calculate_effective_pressure(z_ngf, stratigraphy, water_table)
+            horizontal_pressure = calculate_horizontal_pressure(z_ngf, stratigraphy, water_table)
 
-# Calcolo dei valori per il grafico
-lithostatic_pressures = []
-water_pressures = []
-effective_pressures = []
-horizontal_pressures = []
+            lithostatic_pressures.append(lithostatic_pressure if lithostatic_pressure is not None else 0)
+            water_pressures.append(water_pressure)
+            effective_pressures.append(effective_pressure if effective_pressure is not None else 0)
+            horizontal_pressures.append(horizontal_pressure if horizontal_pressure is not None else 0)
 
-for z_ngf in quotas_ngf:
-    lithostatic_pressure = calculate_lithostatic_pressure(z_ngf, stratigraphy)
-    water_pressure = calculate_water_pressure(z_ngf, water_table)
-    effective_pressure = calculate_effective_pressure(z_ngf, stratigraphy, water_table)
-    horizontal_pressure = calculate_horizontal_pressure(z_ngf, stratigraphy, water_table)
+        # Plot the results
+        fig, ax = plt.subplots(figsize=(12, 8))
+        ax.plot(lithostatic_pressures, quotas_ngf, label="Pressione Litostatica", color="blue", linewidth=2)
+        ax.plot(water_pressures, quotas_ngf, label="Pressione Falda", color="cyan", linestyle="--", linewidth=2)
+        ax.plot(effective_pressures, quotas_ngf, label="Pressione Efficace", color="green", linestyle="-.", linewidth=2)
+        ax.plot(horizontal_pressures, quotas_ngf, label="Spinta Orizzontale", color="red", linestyle=":", linewidth=2)
 
-    lithostatic_pressures.append(lithostatic_pressure if lithostatic_pressure is not None else 0)
-    water_pressures.append(water_pressure)
-    effective_pressures.append(effective_pressure if effective_pressure is not None else 0)
-    horizontal_pressures.append(horizontal_pressure if horizontal_pressure is not None else 0)
+        # Draw water table
+        ax.axhline(y=water_table, color="orange", linestyle="--", linewidth=1.5, label=f"Quota Falda ({water_table} m NGF)")
 
-# Plot dei valori
-plt.figure(figsize=(12, 8))
+        # Add stratigraphy layers
+        terrain_colors = ["#D2B48C", "#A9A9A9", "#8B4513"]
+        for i, layer in enumerate(stratigraphy):
+            top = layer["top_level"]
+            bottom = layer["bottom_level"]
+            title = layer["title"]
+            color = terrain_colors[i % len(terrain_colors)]
 
-# Plot pressione litostatica
-plt.plot(lithostatic_pressures, quotas_ngf, label="Pressione Litostatica", color="blue", linewidth=2)
+            ax.axhline(y=bottom, color="gray", linestyle="--", linewidth=0.8, alpha=0.7)
+            ax.add_patch(plt.Rectangle((0, bottom), max(lithostatic_pressures), top - bottom, 
+                                        color=color, alpha=0.5, edgecolor="black"))
+            ax.text(max(lithostatic_pressures) / 2, (top + bottom) / 2, title, 
+                    rotation=0, horizontalalignment="center", verticalalignment="center", 
+                    fontsize=10, color="black")
 
-# Plot pressione della falda
-plt.plot(water_pressures, quotas_ngf, label="Pressione Falda", color="cyan", linestyle="--", linewidth=2)
-
-# Plot pressione efficace
-plt.plot(effective_pressures, quotas_ngf, label="Pressione Efficace", color="green", linestyle="-.", linewidth=2)
-
-# Plot spinta orizzontale
-plt.plot(horizontal_pressures, quotas_ngf, label="Spinta Orizzontale", color="red", linestyle=":", linewidth=2)
-
-# Linea della falda
-plt.axhline(y=water_table, color="orange", linestyle="--", linewidth=1.5, label="Quota Falda ({} m NGF)".format(water_table))
-
-# Linee e rettangoli per gli strati con il nome del terreno
-terrain_colors = ["#D2B48C", "#A9A9A9", "#8B4513"]  # Marroncino chiaro, grigio, marrone scuro
-
-for i, layer in enumerate(stratigraphy):
-    top = layer["top_level"]
-    bottom = layer["bottom_level"]
-    title = layer["title"]
-    color = terrain_colors[i % len(terrain_colors)]  # Ciclo sui colori
-
-    # Linea orizzontale per il cambio di strato
-    plt.axhline(y=bottom, color="gray", linestyle="--", linewidth=0.8, alpha=0.7)
-
-    # Rettangolo colorato per rappresentare lo strato, con il nome del terreno
-    plt.gca().add_patch(plt.Rectangle((0, bottom), max(lithostatic_pressures), top - bottom,
-                                       color=color, alpha=0.5))
-
-    # Testo del titolo dello strato, centrato nel rettangolo
-    plt.text(max(lithostatic_pressures) / 2, (top + bottom) / 2, title,
-             rotation=0, horizontalalignment="center", verticalalignment="center",
-             fontsize=10, color="black")
-
-# Configurazioni grafiche
-plt.xlabel("Pressione (kPa)")
-plt.ylabel("Quota (m NGF)")
-plt.title("Pressioni Verticali ed Orizzontali nel Terreno")
-plt.legend()
-plt.grid(True, linestyle="--", alpha=0.7)
-
-# Mostrare il grafico
-plt.tight_layout()
-plt.show()
+        ax.set_xlabel("Pressione (kPa)")
+        ax.set_ylabel("Quota (m NGF)")
+        ax.set_title("Pressioni Verticali ed Orizzontali nel Terreno")
+        ax.legend()
+        ax.grid(True, linestyle="--", alpha=0.7)
+        st.pyplot(fig)
