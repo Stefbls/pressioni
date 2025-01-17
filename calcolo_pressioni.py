@@ -112,6 +112,13 @@ if uploaded_file is not None:
         ax.plot(data["Spinta Orizzontale (kPa)"], quotas_ngf, label="Spinta Orizzontale", color="red", linestyle=":", linewidth=2)
         
         ax.axhline(y=water_table, color="orange", linestyle="--", linewidth=1.5, label=f"Quota Falda ({water_table} m NGF)")
+
+        for i, layer in enumerate(stratigraphy):
+            bottom = layer["bottom_level"]
+            title = layer["title"]
+            # Linea orizzontale per il cambio di strato
+            plt.axhline(y=bottom, color="gray", linestyle="--", linewidth=0.8, alpha=0.7)
+        
         ax.set_xlabel("Pressione (kPa)")
         ax.set_ylabel("Quota (m NGF)")
         ax.set_title("Pressioni Verticali ed Orizzontali nel Terreno")
