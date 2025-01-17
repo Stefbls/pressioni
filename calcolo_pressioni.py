@@ -113,7 +113,36 @@ if uploaded_file is not None:
         
         ax.axhline(y=water_table, color="orange", linestyle="--", linewidth=1.5, label=f"Quota Falda ({water_table} m NGF)")   
 
+        # Rettangoli colorati per rappresentare gli strati di terreno
+        terrain_colors = ["#D2B48C", "#A9A9A9", "#8B4513"]  # Marroncino chiaro, grigio, marrone scuro
 
+        for i, layer in enumerate(stratigraphy):
+            top = layer["top_level"]
+            bottom = layer["bottom_level"]
+            title = layer["title"]
+            color = terrain_colors[i % len(terrain_colors)]  # Ciclo sui colori se gli strati sono più di 3
+            ax.axhline(y=bottom, color="gray", linestyle="--", linewidth=0.8, alpha=0.7)
+            # Rettangolo colorato per lo strato
+            #plt.gca().add_patch(plt.Rectangle(
+                #(0, bottom),                  # Coordinate in basso a sinistra del rettangolo
+                #max(lithostatic_pressure),   # Larghezza del rettangolo
+                #top - bottom,                 # Altezza del rettangolo
+                #color=color,                  # Colore di sfondo
+                #alpha=0.5,                    # Trasparenza
+                #edgecolor="black"             # Colore del bordo
+            #))
+
+            # Testo del titolo dello strato, centrato nel rettangolo
+            #plt.text(
+                #max(lithostatic_pressure) / 2,  # Posizione orizzontale del testo (centro del grafico)
+                #(top + bottom) / 2,             # Posizione verticale del testo (centro dello strato)
+                #title,                          # Titolo dello strato
+                #rotation=0,                     # Nessuna rotazione del testo
+                #horizontalalignment="center",   # Allineamento orizzontale centrato
+                #verticalalignment="center",     # Allineamento verticale centrato
+                #fontsize=10,                    # Dimensione del font
+                #color="black"                   # Colore del testo
+            #)
         
         
         ax.set_xlabel("Pressione (kPa)")
