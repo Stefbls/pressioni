@@ -66,12 +66,6 @@ if uploaded_file is not None:
         df = pd.read_excel(uploaded_file)
         stratigraphy = df.to_dict(orient="records")
 
-        # Preparare le quote per il grafico
-        #quotas_ngf = [layer["top_level"] for layer in stratigraphy]
-        #quotas_ngf.append(water_table)
-        #quotas_ngf.extend(layer["bottom_level"] for layer in stratigraphy)
-        #quotas_ngf = sorted(set(quotas_ngf), reverse=True)
-
 # Preparare le quote per il grafico
         quotas_ngf = [stratigraphy[0]["top_level"], water_table]  # Quota di sommità e falda
         
