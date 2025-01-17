@@ -66,7 +66,7 @@ if uploaded_file is not None:
         df = pd.read_excel(uploaded_file)
         stratigraphy = df.to_dict(orient="records")
 
-# Preparare le quote per il grafico
+        # Preparare le quote per il grafico
         quotas_ngf = [stratigraphy[0]["top_level"], water_table]  # Quota di sommità e falda
         
         for i, layer in enumerate(stratigraphy[:-1]):  # Per gli strati intermedi
@@ -112,12 +112,29 @@ if uploaded_file is not None:
         ax.plot(data["Spinta Orizzontale (kPa)"], quotas_ngf, label="Spinta Orizzontale", color="red", linestyle=":", linewidth=2)
         
         ax.axhline(y=water_table, color="orange", linestyle="--", linewidth=1.5, label=f"Quota Falda ({water_table} m NGF)")
+        
+        # Linee e rettangoli per gli strati con il nome del terreno
+        terrain_colors = ["#D2B48C", "#A9A9A9", "#8B4513"]  # Marroncino chiaro, grigio, marrone scuro
+        
+        # Linea orizzontale per il cambio di strato
+                 
 
         for i, layer in enumerate(stratigraphy):
+            top = layer["top_level"]
             bottom = layer["bottom_level"]
             title = layer["title"]
+            color = terrain_colors[i % len(terrain_colors)]  # Ciclo sui colori
+            
             # Linea orizzontale per il cambio di strato
             plt.axhline(y=bottom, color="gray", linestyle="--", linewidth=0.8, alpha=0.7)
+
+            # Rettangolo colorato per rappresentare lo strato, con il nome del terreno
+            #plt.gca().add_patch(plt.Rectangle((0, bottom), max(lithostatic_pressures), top - bottom, color=color, alpha=0.5, edgecolor="black"))
+
+            # Testo del titolo dello strato, centrato nel rettangolo
+            #plt.text(max(lithostatic_pressures) / 2, (top + bottom) / 2, title,
+            # rotation=0, horizontalalignment="center", verticalalignment="center",
+            # fontsize=10, color="black")
         
         ax.set_xlabel("Pressione (kPa)")
         ax.set_ylabel("Quota (m NGF)")
