@@ -132,7 +132,7 @@ if uploaded_file is not None:
         # Rettangolo colorato per lo strato
         plt.gca().add_patch(plt.Rectangle(
             (0, bottom),                  # Coordinate in basso a sinistra del rettangolo
-            max(lithostatic_pressures),   # Larghezza del rettangolo
+            max(lithostatic_pressure),   # Larghezza del rettangolo
             top - bottom,                 # Altezza del rettangolo
             color=color,                  # Colore di sfondo
             alpha=0.5,                    # Trasparenza
@@ -141,7 +141,7 @@ if uploaded_file is not None:
 
         # Testo del titolo dello strato, centrato nel rettangolo
         plt.text(
-            max(lithostatic_pressures) / 2,  # Posizione orizzontale del testo (centro del grafico)
+            max(lithostatic_pressure) / 2,  # Posizione orizzontale del testo (centro del grafico)
             (top + bottom) / 2,             # Posizione verticale del testo (centro dello strato)
             title,                          # Titolo dello strato
             rotation=0,                     # Nessuna rotazione del testo
