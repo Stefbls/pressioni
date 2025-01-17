@@ -144,12 +144,13 @@ if uploaded_file is not None:
                 color="black"                   # Colore del testo
             )
         
-        
+        # Configurazioni grafiche
         ax.set_xlabel("Pressione (kPa)")
         ax.set_ylabel("Quota (m NGF)")
         ax.set_title("Pressioni Verticali ed Orizzontali nel Terreno")
         ax.legend()
         ax.grid(True, linestyle="--", alpha=0.7)
+        # Mostrare il grafico
         st.pyplot(fig)
 
         
