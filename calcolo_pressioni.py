@@ -112,13 +112,7 @@ if uploaded_file is not None:
         ax.plot(data["Spinta Orizzontale (kPa)"], quotas_ngf, label="Spinta Orizzontale", color="red", linestyle=":", linewidth=2)
         
         ax.axhline(y=water_table, color="orange", linestyle="--", linewidth=1.5, label=f"Quota Falda ({water_table} m NGF)")   
-        
-        ax.set_xlabel("Pressione (kPa)")
-        ax.set_ylabel("Quota (m NGF)")
-        ax.set_title("Pressioni Verticali ed Orizzontali nel Terreno")
-        ax.legend()
-        ax.grid(True, linestyle="--", alpha=0.7)
-        st.pyplot(fig)
+
 
         # Rettangoli colorati per rappresentare gli strati di terreno
         terrain_colors = ["#D2B48C", "#A9A9A9", "#8B4513"]  # Marroncino chiaro, grigio, marrone scuro
@@ -150,6 +144,15 @@ if uploaded_file is not None:
                 fontsize=10,                    # Dimensione del font
                 color="black"                   # Colore del testo
             )
+        
+        ax.set_xlabel("Pressione (kPa)")
+        ax.set_ylabel("Quota (m NGF)")
+        ax.set_title("Pressioni Verticali ed Orizzontali nel Terreno")
+        ax.legend()
+        ax.grid(True, linestyle="--", alpha=0.7)
+        st.pyplot(fig)
+
+        
 
     except Exception as e:
         st.error(f"Errore nella lettura del file: {e}")
