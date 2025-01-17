@@ -67,11 +67,20 @@ if uploaded_file is not None:
         stratigraphy = df.to_dict(orient="records")
 
         # Preparare le quote per il grafico
-        quotas_ngf = [layer["top_level"] for layer in stratigraphy]
-        quotas_ngf.append(water_table)
-        quotas_ngf.extend(layer["bottom_level"] for layer in stratigraphy)
-        quotas_ngf = sorted(set(quotas_ngf), reverse=True)
+        #quotas_ngf = [layer["top_level"] for layer in stratigraphy]
+        #quotas_ngf.append(water_table)
+        #quotas_ngf.extend(layer["bottom_level"] for layer in stratigraphy)
+        #quotas_ngf = sorted(set(quotas_ngf), reverse=True)
 
+# Preparare le quote per il grafico
+quotas_ngf = [stratigraphy[0]["top_level"], water_table]  # Quota di sommità e falda
+for i, layer in enumerate(stratigraphy[:-1]):  # Per gli strati intermedi
+    quotas_ngf.append(layer["bottom_level"])  # Quota di fondo
+    quotas_ngf.append(layer["bottom_level"] - 0.01)  # 1 cm sotto il cambio di strato
+quotas_ngf.append(stratigraphy[-1]["bottom_level"])  # Quota di fondo dell'ultimo strato
+
+quotas_ngf = sorted(set(quotas_ngf), reverse=True)  # Rimuovi duplicati e ordina decrescente
+        
         # Calcolo dei valori
         data = {
             "Quota (m NGF)": quotas_ngf,
