@@ -111,30 +111,7 @@ if uploaded_file is not None:
         ax.plot(data["Pressione Efficace (kPa)"], quotas_ngf, label="Pressione Efficace", color="green", linestyle="-.", linewidth=2)
         ax.plot(data["Spinta Orizzontale (kPa)"], quotas_ngf, label="Spinta Orizzontale", color="red", linestyle=":", linewidth=2)
         
-        ax.axhline(y=water_table, color="orange", linestyle="--", linewidth=1.5, label=f"Quota Falda ({water_table} m NGF)")
-        
-        # Linee e rettangoli per gli strati con il nome del terreno
-        terrain_colors = ["#D2B48C", "#A9A9A9", "#8B4513"]  # Marroncino chiaro, grigio, marrone scuro
-        
-        # Linea orizzontale per il cambio di strato
-                 
-
-        for i, layer in enumerate(stratigraphy):
-            top = layer["top_level"]
-            bottom = layer["bottom_level"]
-            title = layer["title"]
-            color = terrain_colors[i % len(terrain_colors)]  # Ciclo sui colori
-            
-            # Linea orizzontale per il cambio di strato
-            ax.axhline(y=bottom, color="gray", linestyle="--", linewidth=0.8, alpha=0.7)
-
-            # Rettangolo colorato per rappresentare lo strato, con il nome del terreno
-            plt.gca().add_patch(plt.Rectangle((0, bottom), max(lithostatic_pressure), top - bottom, color=color, alpha=0.5, edgecolor="black"))
-
-            # Testo del titolo dello strato, centrato nel rettangolo
-            #plt.text(max(lithostatic_pressure) / 2, (top + bottom) / 2, title,
-            # rotation=0, horizontalalignment="center", verticalalignment="center",
-            # fontsize=10, color="black")
+        ax.axhline(y=water_table, color="orange", linestyle="--", linewidth=1.5, label=f"Quota Falda ({water_table} m NGF)")   
         
         ax.set_xlabel("Pressione (kPa)")
         ax.set_ylabel("Quota (m NGF)")
@@ -142,6 +119,37 @@ if uploaded_file is not None:
         ax.legend()
         ax.grid(True, linestyle="--", alpha=0.7)
         st.pyplot(fig)
+
+        # Rettangoli colorati per rappresentare gli strati di terreno
+        terrain_colors = ["#D2B48C", "#A9A9A9", "#8B4513"]  # Marroncino chiaro, grigio, marrone scuro
+
+        for i, layer in enumerate(stratigraphy):
+            top = layer["top_level"]
+            bottom = layer["bottom_level"]
+            title = layer["title"]
+            color = terrain_colors[i % len(terrain_colors)]  # Ciclo sui colori se gli strati sono più di 3
+
+        # Rettangolo colorato per lo strato
+        plt.gca().add_patch(plt.Rectangle(
+            (0, bottom),                  # Coordinate in basso a sinistra del rettangolo
+            max(lithostatic_pressures),   # Larghezza del rettangolo
+            top - bottom,                 # Altezza del rettangolo
+            color=color,                  # Colore di sfondo
+            alpha=0.5,                    # Trasparenza
+            edgecolor="black"             # Colore del bordo
+        ))
+
+        # Testo del titolo dello strato, centrato nel rettangolo
+        plt.text(
+            max(lithostatic_pressures) / 2,  # Posizione orizzontale del testo (centro del grafico)
+            (top + bottom) / 2,             # Posizione verticale del testo (centro dello strato)
+            title,                          # Titolo dello strato
+            rotation=0,                     # Nessuna rotazione del testo
+            horizontalalignment="center",   # Allineamento orizzontale centrato
+            verticalalignment="center",     # Allineamento verticale centrato
+            fontsize=10,                    # Dimensione del font
+            color="black"                   # Colore del testo
+        )
 
     except Exception as e:
         st.error(f"Errore nella lettura del file: {e}")
