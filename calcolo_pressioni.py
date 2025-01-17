@@ -133,16 +133,16 @@ if uploaded_file is not None:
             #))
 
             # Testo del titolo dello strato, centrato nel rettangolo
-            ax.text(
-                max(lithostatic_pressure) / 2,  # Posizione orizzontale del testo (centro del grafico)
-                (top + bottom) / 2,             # Posizione verticale del testo (centro dello strato)
-                title,                          # Titolo dello strato
-                rotation=0,                     # Nessuna rotazione del testo
-                horizontalalignment="center",   # Allineamento orizzontale centrato
-                verticalalignment="center",     # Allineamento verticale centrato
-                fontsize=10,                    # Dimensione del font
-                color="black"                   # Colore del testo
-            )
+            #ax.text(
+            #    max(lithostatic_pressure) / 2,  # Posizione orizzontale del testo (centro del grafico)
+            #    (top + bottom) / 2,             # Posizione verticale del testo (centro dello strato)
+            #    title,                          # Titolo dello strato
+            #    rotation=0,                     # Nessuna rotazione del testo
+            #    horizontalalignment="center",   # Allineamento orizzontale centrato
+            #    verticalalignment="center",     # Allineamento verticale centrato
+            #    fontsize=10,                    # Dimensione del font
+            #    color="black"                   # Colore del testo
+            #)
         
         # Configurazioni grafiche
         ax.set_xlabel("Pressione (kPa)")
