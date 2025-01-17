@@ -133,7 +133,7 @@ if uploaded_file is not None:
             #))
 
             # Testo del titolo dello strato, centrato nel rettangolo
-            plt.text(
+            ax.text(
                 max(lithostatic_pressure) / 2,  # Posizione orizzontale del testo (centro del grafico)
                 (top + bottom) / 2,             # Posizione verticale del testo (centro dello strato)
                 title,                          # Titolo dello strato
