@@ -128,7 +128,7 @@ if uploaded_file is not None:
             bottom = layer["bottom_level"]
             title = layer["title"]
             color = terrain_colors[i % len(terrain_colors)]  # Ciclo sui colori se gli strati sono più di 3
-
+            plt.axhline(y=bottom, color="gray", linestyle="--", linewidth=0.8, alpha=0.7)
             # Rettangolo colorato per lo strato
             plt.gca().add_patch(plt.Rectangle(
                 (0, bottom),                  # Coordinate in basso a sinistra del rettangolo
