@@ -126,10 +126,10 @@ if uploaded_file is not None:
             color = terrain_colors[i % len(terrain_colors)]  # Ciclo sui colori
             
             # Linea orizzontale per il cambio di strato
-            plt.axhline(y=bottom, color="gray", linestyle="--", linewidth=0.8, alpha=0.7)
+            ax.axhline(y=bottom, color="gray", linestyle="--", linewidth=0.8, alpha=0.7)
 
             # Rettangolo colorato per rappresentare lo strato, con il nome del terreno
-            #plt.gca().add_patch(plt.Rectangle((0, bottom), max(lithostatic_pressures), top - bottom, color=color, alpha=0.5, edgecolor="black"))
+            plt.gca().add_patch(plt.Rectangle((0, bottom), max(lithostatic_pressures), top - bottom, color=color, alpha=0.5, edgecolor="black"))
 
             # Testo del titolo dello strato, centrato nel rettangolo
             #plt.text(max(lithostatic_pressures) / 2, (top + bottom) / 2, title,
