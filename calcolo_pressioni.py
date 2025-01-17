@@ -129,27 +129,27 @@ if uploaded_file is not None:
             title = layer["title"]
             color = terrain_colors[i % len(terrain_colors)]  # Ciclo sui colori se gli strati sono più di 3
 
-        # Rettangolo colorato per lo strato
-        plt.gca().add_patch(plt.Rectangle(
-            (0, bottom),                  # Coordinate in basso a sinistra del rettangolo
-            max(lithostatic_pressure),   # Larghezza del rettangolo
-            top - bottom,                 # Altezza del rettangolo
-            color=color,                  # Colore di sfondo
-            alpha=0.5,                    # Trasparenza
-            edgecolor="black"             # Colore del bordo
-        ))
+            # Rettangolo colorato per lo strato
+            plt.gca().add_patch(plt.Rectangle(
+                (0, bottom),                  # Coordinate in basso a sinistra del rettangolo
+                max(lithostatic_pressure),   # Larghezza del rettangolo
+                top - bottom,                 # Altezza del rettangolo
+                color=color,                  # Colore di sfondo
+                alpha=0.5,                    # Trasparenza
+                edgecolor="black"             # Colore del bordo
+            ))
 
-        # Testo del titolo dello strato, centrato nel rettangolo
-        plt.text(
-            max(lithostatic_pressure) / 2,  # Posizione orizzontale del testo (centro del grafico)
-            (top + bottom) / 2,             # Posizione verticale del testo (centro dello strato)
-            title,                          # Titolo dello strato
-            rotation=0,                     # Nessuna rotazione del testo
-            horizontalalignment="center",   # Allineamento orizzontale centrato
-            verticalalignment="center",     # Allineamento verticale centrato
-            fontsize=10,                    # Dimensione del font
-            color="black"                   # Colore del testo
-        )
+            # Testo del titolo dello strato, centrato nel rettangolo
+            plt.text(
+                max(lithostatic_pressure) / 2,  # Posizione orizzontale del testo (centro del grafico)
+                (top + bottom) / 2,             # Posizione verticale del testo (centro dello strato)
+                title,                          # Titolo dello strato
+                rotation=0,                     # Nessuna rotazione del testo
+                horizontalalignment="center",   # Allineamento orizzontale centrato
+                verticalalignment="center",     # Allineamento verticale centrato
+                fontsize=10,                    # Dimensione del font
+                color="black"                   # Colore del testo
+            )
 
     except Exception as e:
         st.error(f"Errore nella lettura del file: {e}")
